@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)file:///Users/abdel/Downloads/Case_Outreach_Pipeline.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Outreach Pipeline</title>
+<link href="file:///Users/abdel/Downloads/Case%20Outreach%20Pipeline_files/css2" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #1c1c1e;
+    --card: #2a2a2c;
+    --border: #3a3a3c;
+    --surface: #ffffff;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --yellow: #facc15;
+    --text: #111;
+  }
+
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: #eee; min-height: 100vh; }
+
+  .page { max-width: 1280px; margin: 0 auto; padding: 36px 28px 72px; }
+
+  /* ── SHARED HEADER ── */
+  .top-bar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .title-block h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .title-block p {
+    font-size: 0.78rem;
+    color: #888;
+    margin-top: 4px;
+    font-family: 'DM Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .top-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .drop-group { display: flex; flex-direction: column; gap: 4px; }
+
+  .drop-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #666;
+  }
+
+  .styled-select {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 36px 9px 14px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 155px;
+    transition: border-color 0.2s;
+  }
+  .styled-select:focus { border-color: #666; }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: #888; font-size: 0.75rem;
+    pointer-events: none;
+  }
+
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    background: transparent;
+    color: #bbb;
+    border: 1.5px solid var(--border);
+    padding: 9px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  .btn:hover { color: #fff; border-color: #777; }
+  .btn.back { border-color: var(--blue); color: var(--blue); }
+  .btn.back:hover { background: var(--blue); color: #fff; }
+
+  .divider { height: 1px; background: #2a2a2c; margin: 14px 0 28px; }
+
+  .sec-head {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #333;
+  }
+
+  /* ── VIEWS ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── SUMMARY TABLE ── */
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .sum-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .sum-card .sc-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+    margin-bottom: 6px;
+  }
+
+  .sum-card .sc-val {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .sum-card .sc-sub { font-size: 0.68rem; color: #666; }
+  .sum-card.c1 .sc-val { color: var(--blue); }
+  .sum-card.c2 .sc-val { color: var(--green); }
+  .sum-card.c3 .sc-val { color: var(--yellow); }
+  .sum-card.c4 .sc-val { color: var(--red); }
+
+  /* County table */
+  .county-table-wrap { overflow-x: auto; }
+
+  table.county-tbl {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table.county-tbl th {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #666;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid #2a2a2c;
+    white-space: nowrap;
+  }
+
+  table.county-tbl td {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: #ccc;
+    padding: 13px 14px;
+    border-bottom: 1px solid #222;
+    white-space: nowrap;
+  }
+
+  table.county-tbl tr.county-row { cursor: pointer; transition: background 0.15s; }
+  table.county-tbl tr.county-row:hover td { background: #252527; }
+  table.county-tbl tr.county-row:hover td.cn { color: #fff; }
+
+  td.cn {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.88rem;
+  }
+
+  td.pct-cell { font-weight: 600; }
+
+  .pill-good  { color: var(--green); }
+  .pill-ok    { color: var(--amber); }
+  .pill-low   { color: var(--red); }
+  .pill-none  { color: #444; }
+
+  .view-link {
+    font-size: 0.7rem;
+    color: var(--blue);
+    border: 1px solid var(--blue);
+    border-radius: 4px;
+    padding: 3px 10px;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .view-link:hover { background: var(--blue); color: #fff; }
+
+  /* ── DETAIL VIEW ── */
+  .detail-county-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    margin-bottom: 20px;
+  }
+
+  .detail-county-badge .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+
+  .detail-county-badge span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    color: #aaa;
+  }
+
+  .detail-county-badge strong { color: #fff; }
+
+  /* Pipeline flow */
+  .pipeline-wrap {
+    display: flex;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    margin-bottom: 40px;
+  }
+
+  .stage {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 20px 18px 18px;
+    min-width: 155px;
+    flex: 1;
+    transition: transform 0.15s;
+  }
+  .stage:hover { transform: translateY(-3px); }
+
+  .stage-num {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: #999;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .stage-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.25;
+    min-height: 2.5rem;
+  }
+
+  .stage-big {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .stage-sub { font-size: 0.68rem; color: #888; margin-bottom: 14px; font-family: 'DM Sans', sans-serif; }
+
+  .input-wrap { display: flex; align-items: center; gap: 6px; }
+
+  .input-wrap label {
+    font-size: 0.65rem;
+    font-family: 'DM Sans', sans-serif;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .num-input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    border: 1.5px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 8px;
+    width: 72px;
+    background: #f9f9f9;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .num-input:focus { border-color: var(--blue); background: #fff; }
+
+  .stage-1 { border-top: 4px solid var(--blue); }
+  .stage-2 { border-top: 4px solid var(--purple); }
+  .stage-3 { border-top: 4px solid var(--amber); }
+  .stage-4 { border-top: 4px solid var(--cyan); }
+  .stage-5 { border-top: 4px solid var(--green); }
+
+  .connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    flex-shrink: 0;
+    padding-top: 52px;
+    gap: 5px;
+  }
+
+  .arrow-row { display: flex; align-items: center; }
+  .shaft { width: 26px; height: 2px; background: #aaa; }
+  .arrowhead {
+    width: 0; height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid #aaa;
+  }
+
+  .conv-pill {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .conv-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.56rem;
+    color: #ccc;
+    text-align: center;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Metrics grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 44px;
+  }
+
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+  }
+
+  .stat-box .s-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #aaa;
+    margin-bottom: 8px;
+  }
+
+  .stat-box .s-val {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .stat-box .s-sub { font-size: 0.68rem; color: #999; }
+  .stat-box.b1 .s-val { color: var(--blue); }
+  .stat-box.b2 .s-val { color: var(--purple); }
+  .stat-box.b3 .s-val { color: var(--cyan); }
+  .stat-box.b4 .s-val { color: var(--green); }
+  .stat-box.b-nr .s-val { color: #f87171; }
+  .stat-box.b-overall .s-val { color: var(--yellow); }
+
+  /* Funnel bars */
+  .bars-section { margin-bottom: 44px; }
+
+  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+
+  .bar-lbl {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    color: #ccc;
+    width: 120px;
+    text-align: right;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .bar-track {
+    flex: 1; height: 22px;
+    background: var(--card);
+    border-radius: 4px;
+    border: 1px solid #222;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .bar-fill span { font-family: 'DM Sans', sans-serif; font-size: 0.65rem; color: rgba(255,255,255,0.8); white-space: nowrap; }
+
+  .bar-n { font-family: 'DM Sans', sans-serif; font-size: 0.72rem; color: #ccc; width: 36px; flex-shrink: 0; text-align: right; }
+
+  /* Notes */
+  .notes-box {
+    background: #111;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+
+  .notes-box h3 { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: #aaa; margin-bottom: 10px; }
+
+  .notes-box textarea {
+    width: 100%; min-height: 56px;
+    background: transparent; border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; color: #bbb;
+    resize: none; outline: none; line-height: 1.7;
+  }
+
+  .notes-box textarea::placeholder { color: #444; }
+
+  @media (max-width: 860px) {
+    .summary-cards { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .pipeline-wrap { flex-direction: column; align-items: stretch; }
+    .connector { flex-direction: row; padding-top: 0; min-width: unset; padding: 6px 0 6px 20px; }
+  }
+
+  .btn.export {
+    border-color: var(--yellow);
+    color: var(--yellow);
+  }
+  .btn.export:hover { background: var(--yellow); color: #111; }
+
+
+
+  .ytd-banner {
+    display: none;
+    background: #111a11;
+    border: 1px solid #2a3a2a;
+    border-radius: 8px;
+    padding: 10px 18px;
+    margin-bottom: 20px;
+    align-items: center;
+    gap: 10px;
+  }
+  .ytd-banner.visible { display: flex; }
+  .ytd-banner .ytd-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--yellow); box-shadow: 0 0 6px var(--yellow); flex-shrink: 0;
+  }
+  .ytd-banner span { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; color: #aaa; }
+  .ytd-banner strong { color: var(--yellow); }
+
+
+  .save-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    color: #555;
+    transition: color 0.3s;
+  }
+  .save-indicator .save-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #555;
+    transition: background 0.3s, box-shadow 0.3s;
+    flex-shrink: 0;
+  }
+  .save-indicator.saved .save-dot {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+  .save-indicator.saved { color: var(--green); }
+  .save-indicator.saving .save-dot {
+    background: var(--yellow);
+    box-shadow: 0 0 6px var(--yellow);
+  }
+  .save-indicator.saving { color: var(--yellow); }
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- SHARED TOP BAR -->
+  <div class="top-bar">
+    <div class="title-block">
+      <h1>Case Outreach Pipeline</h1>
+      <p id="view-subtitle">All Counties Overview</p>
+      <div class="save-indicator saved" id="save-indicator">
+        <div class="save-dot"></div>
+        <span id="save-label">Data saved in browser</span>
+      </div>
+    </div>
+    <div class="top-controls">
+      <div class="drop-group">
+        <div class="drop-label">County</div>
+        <div class="select-wrap">
+          <select class="styled-select" id="county-jump" onchange="onCountyJump()">
+            <option value="">All Counties</option>
+            <option>Ashtabula</option>
+            <option>Lorain</option>
+            <option>Summit</option>
+            <option>Wayne</option>
+            <option>Cuyahoga</option>
+            <option>Medina</option>
+            <option>Lake</option>
+            <option>Geauga</option>
+          </select>
+        </div>
+      </div>
+      <div class="drop-group">
+        <div class="drop-label">Month</div>
+        <div class="select-wrap">
+          <select class="styled-select" id="month-select" onchange="onMonthChange()">
+            <option value="Year to Date" selected="">Year to Date</option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn back" id="back-btn" onclick="showSummary()" style="display:none;">← All Counties</button>
+      <button class="btn export" onclick="exportCSV()">↓ Export CSV</button>
+      <button class="btn" onclick="resetCurrent()">↻ Reset</button>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <!-- VIEW 1: SUMMARY -->
+  <div class="view active" id="view-summary">
+    <div class="ytd-banner visible" id="ytd-banner-summary">
+      <div class="ytd-dot"></div>
+      <span>Showing <strong>Year-to-Date</strong> totals — all recorded months combined across all counties</span>
+    </div>
+    <div class="sec-head" id="summary-heading">All Counties — Year to Date</div>
+    <div class="summary-cards">
+      <div class="sum-card c1">
+        <div class="sc-label">Total Outreach</div>
+        <div class="sc-val" id="agg-outreach">451</div>
+        <div class="sc-sub">Across all counties</div>
+      </div>
+      <div class="sum-card c2">
+        <div class="sc-label">Total Authorized</div>
+        <div class="sc-val" id="agg-authorized">21</div>
+        <div class="sc-sub">Billable cases opened</div>
+      </div>
+      <div class="sum-card c3">
+        <div class="sc-label">Avg Response Rate</div>
+        <div class="sc-val" id="agg-response">32%</div>
+        <div class="sc-sub">Outreach → Response</div>
+      </div>
+      <div class="sum-card c4">
+        <div class="sc-label">Avg Overall Conv.</div>
+        <div class="sc-val" id="agg-overall">5%</div>
+        <div class="sc-sub">Outreach → Case</div>
+      </div>
+      <div class="sum-card c3">
+        <div class="sc-label">Total Interviews Completed</div>
+        <div class="sc-val" id="agg-completed">71</div>
+        <div class="sc-sub">Across all counties</div>
+      </div>
+    </div>
+    <div class="county-table-wrap">
+      <table class="county-tbl">
+        <thead>
+          <tr>
+            <th>County</th>
+            <th>Outreach</th>
+            <th>Response</th>
+            <th>No Response</th>
+            <th>Resp. Rate</th>
+            <th>Int. Scheduled</th>
+            <th>Int. Completed</th>
+            <th>Authorized</th>
+            <th>Overall Conv.</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="county-tbody"><tr class="county-row">
+        <td class="cn">Ashtabula</td>
+        <td>90</td>
+        <td>42</td>
+        <td>48</td>
+        <td class="pct-cell pill-ok">47%</td>
+        <td>19</td>
+        <td>15</td>
+        <td>4</td>
+        <td class="pct-cell pill-low">4%</td>
+        <td><button class="view-link" onclick="event.stopPropagation(); openCounty(&#39;Ashtabula&#39;)">View →</button></td>
+      </tr><tr class="county-row">
+        <td class="cn">Lorain</td>
+        <td>72</td>
+        <td>15</td>
+        <td>57</td>
+        <td class="pct-cell pill-low">21%</td>
+        <td>9</td>
+        <td>6</td>
+        <td>1</td>
+        <td class="pct-cell pill-low">1%</td>
+        <td><button class="view-link" onclick="event.stopPropagation(); openCounty(&#39;Lorain&#39;)">View →</button></td>
+      </tr><tr class="county-row">
+        <td class="cn">Summit</td>
+        <td>97</td>
+        <td>40</td>
+        <td>57</td>
+        <td class="pct-cell pill-ok">41%</td>
+        <td>30</td>
+        <td>24</td>
+        <td>7</td>
+        <td class="pct-cell pill-low">7%</td>
+        <td><button class="view-link" onclick="event.stopPropagation(); openCounty(&#39;Summit&#39;)">View →</button></td>
+      </tr><tr class="county-row">
+        <td class="cn">Wayne</td>
+        <td>22</td>
+        <td>2</td>
+        <td>20</td>
+        <td class="pct-cell pill-low">9%</td>
+        <td>1</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="pct-cell pill-low">0%</td>
+        <td><button class="view-link" onclick="event.stopPropagation(); openCounty(&#39;Wayne&#39;)">View →</button></td>
+      </tr><tr class="county-row">
+        <td class="cn">Cuyahoga</td>
+        <td>100</td>
+        <td>3</td>
+        <td>97</td>
+        <td class="pct-cell pill-low">3%</td>
+        <td>—</td>
+        <td>10</td>
+        <td>4</td>
+        <td class="pct-cell pill-low">4%</td>
+        <td><button class="view-link" onclick="event.stopPropagation(); openCounty(&#39;Cuyahoga&#39;)">View →</button></td>
+      </tr><tr class="county-row">
+        <td class="cn">Medina</td>
+        <td>20</td>
+        <td>7</td>
+        <td>13</td>
+        <td class="pct-cell pill-ok">35%</td>
+        <td>3</td>
+        <td>3</td>
+        <td>1</td>
+        <td class="pct-cell pill-low">5%</td>
+        <td><button class="view-link" onclick="event.stopPropagation(); openCounty(&#39;Medina&#39;)">View →</button></td>
+      </tr><tr class="county-row">
+        <td class="cn">Lake</td>
+        <td>30</td>
+        <td>23</td>
+        <td>7</td>
+        <td class="pct-cell pill-good">77%</td>
+        <td>10</td>
+        <td>10</td>
+        <td>3</td>
+        <td class="pct-cell pill-low">10%</td>
+        <td><button class="view-link" onclick="event.stopPropagation(); openCounty(&#39;Lake&#39;)">View →</button></td>
+      </tr><tr class="county-row">
+        <td class="cn">Geauga</td>
+        <td>20</td>
+        <td>5</td>
+        <td>15</td>
+        <td class="pct-cell pill-low">25%</td>
+        <td>3</td>
+        <td>3</td>
+        <td>1</td>
+        <td class="pct-cell pill-low">5%</td>
+        <td><button class="view-link" onclick="event.stopPropagation(); openCounty(&#39;Geauga&#39;)">View →</button></td>
+      </tr></tbody>
+      </table>
+
+    <!-- Summary Pipeline (aggregated all counties) -->
+    <div class="sec-head" style="margin-top:40px;">Pipeline Workflow — All Counties</div>
+    <div class="pipeline-wrap">
+      <div class="stage stage-1">
+        <div class="stage-num">Step 01</div>
+        <div class="stage-title">Outreach</div>
+        <div class="stage-big" id="sum-cnt-outreach">451</div>
+        <div class="stage-sub">Total attempts made</div>
+      </div>
+      <div class="connector">
+        <div class="arrow-row"><div class="shaft"></div><div class="arrowhead"></div></div>
+        <div class="conv-pill" id="sum-pill-1">30%</div>
+        <div class="conv-label">Response<br>Rate</div>
+      </div>
+      <div class="stage stage-2">
+        <div class="stage-num">Step 02</div>
+        <div class="stage-title">Response</div>
+        <div class="stage-big" id="sum-cnt-response">137</div>
+        <div class="stage-sub">Replied to outreach</div>
+      </div>
+      <div class="connector">
+        <div class="arrow-row"><div class="shaft"></div><div class="arrowhead"></div></div>
+        <div class="conv-pill" id="sum-pill-2">55%</div>
+        <div class="conv-label">Scheduled<br>Rate</div>
+      </div>
+      <div class="stage stage-3">
+        <div class="stage-num">Step 03</div>
+        <div class="stage-title">Interview Scheduled</div>
+        <div class="stage-big" id="sum-cnt-scheduled">75</div>
+        <div class="stage-sub">Confirmed appointments</div>
+      </div>
+      <div class="connector">
+        <div class="arrow-row"><div class="shaft"></div><div class="arrowhead"></div></div>
+        <div class="conv-pill" id="sum-pill-3">95%</div>
+        <div class="conv-label">Completion<br>Rate</div>
+      </div>
+      <div class="stage stage-4">
+        <div class="stage-num">Step 04</div>
+        <div class="stage-title">Interview Completed</div>
+        <div class="stage-big" id="sum-cnt-completed">71</div>
+        <div class="stage-sub">Interviews finished</div>
+      </div>
+      <div class="connector">
+        <div class="arrow-row"><div class="shaft"></div><div class="arrowhead"></div></div>
+        <div class="conv-pill" id="sum-pill-4">30%</div>
+        <div class="conv-label">Authorization<br>Rate</div>
+      </div>
+      <div class="stage stage-5">
+        <div class="stage-num">Step 05</div>
+        <div class="stage-title">Authorized Case</div>
+        <div class="stage-big" id="sum-cnt-authorized">21</div>
+        <div class="stage-sub">Billable cases opened</div>
+      </div>
+    </div>
+
+    <!-- Summary Funnel Bars -->
+    <div class="sec-head">Funnel Drop-off — All Counties</div>
+    <div class="bars-section">
+      <div class="bar-row">
+        <div class="bar-lbl">Outreach</div>
+        <div class="bar-track"><div class="bar-fill" id="sum-bar-1" style="width:100%;background:#3b82f6;"><span id="sum-bar-1-lbl">451</span></div></div>
+        <div class="bar-n" id="sum-bar-1-n">451</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl">Response</div>
+        <div class="bar-track"><div class="bar-fill" id="sum-bar-2" style="width: 30%; background: rgb(168, 85, 247);"><span id="sum-bar-2-lbl">30%</span></div></div>
+        <div class="bar-n" id="sum-bar-2-n">137</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl">Scheduled</div>
+        <div class="bar-track"><div class="bar-fill" id="sum-bar-3" style="width: 17%; background: rgb(245, 158, 11);"><span id="sum-bar-3-lbl">17%</span></div></div>
+        <div class="bar-n" id="sum-bar-3-n">75</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl">Completed</div>
+        <div class="bar-track"><div class="bar-fill" id="sum-bar-4" style="width: 16%; background: rgb(6, 182, 212);"><span id="sum-bar-4-lbl">16%</span></div></div>
+        <div class="bar-n" id="sum-bar-4-n">71</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl">Authorized</div>
+        <div class="bar-track"><div class="bar-fill" id="sum-bar-5" style="width: 5%; background: rgb(34, 197, 94);"><span id="sum-bar-5-lbl">5%</span></div></div>
+        <div class="bar-n" id="sum-bar-5-n">21</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: COUNTY DETAIL -->
+  <div class="view" id="view-detail">
+
+    <div class="ytd-banner" id="ytd-banner-detail">
+      <div class="ytd-dot"></div>
+      <span>Showing <strong>Year-to-Date</strong> totals — all recorded months combined</span>
+    </div>
+    <div class="detail-county-badge">
+      <div class="dot"></div>
+      <span>Viewing: <strong id="detail-county-name">—</strong> &nbsp;·&nbsp; <strong id="detail-month-name">—</strong></span>
+    </div>
+
+    <div class="sec-head">Pipeline Workflow</div>
+    <div class="pipeline-wrap">
+      <div class="stage stage-1">
+        <div class="stage-num">Step 01</div>
+        <div class="stage-title">Outreach</div>
+        <div class="stage-big" id="cnt-outreach">0</div>
+        <div class="stage-sub">Total attempts made</div>
+        <div class="input-wrap">
+          <label>Count</label>
+          <input class="num-input" type="number" id="in-outreach" min="0" value="0" oninput="updateDetail()">
+        </div>
+      </div>
+      <div class="connector">
+        <div class="arrow-row"><div class="shaft"></div><div class="arrowhead"></div></div>
+        <div class="conv-pill" id="pill-1">—</div>
+        <div class="conv-label">Response<br>Rate</div>
+      </div>
+      <div class="stage stage-2">
+        <div class="stage-num">Step 02</div>
+        <div class="stage-title">Response</div>
+        <div class="stage-big" id="cnt-response">0</div>
+        <div class="stage-sub">Replied to outreach</div>
+        <div class="input-wrap">
+          <label>Count</label>
+          <input class="num-input" type="number" id="in-response" min="0" value="0" oninput="updateDetail()">
+        </div>
+      </div>
+      <div class="connector">
+        <div class="arrow-row"><div class="shaft"></div><div class="arrowhead"></div></div>
+        <div class="conv-pill" id="pill-2">—</div>
+        <div class="conv-label">Scheduled<br>Rate</div>
+      </div>
+      <div class="stage stage-3">
+        <div class="stage-num">Step 03</div>
+        <div class="stage-title">Interview Scheduled</div>
+        <div class="stage-big" id="cnt-scheduled">0</div>
+        <div class="stage-sub">Confirmed appointments</div>
+        <div class="input-wrap">
+          <label>Count</label>
+          <input class="num-input" type="number" id="in-scheduled" min="0" value="0" oninput="updateDetail()">
+        </div>
+      </div>
+      <div class="connector">
+        <div class="arrow-row"><div class="shaft"></div><div class="arrowhead"></div></div>
+        <div class="conv-pill" id="pill-3">—</div>
+        <div class="conv-label">Completion<br>Rate</div>
+      </div>
+      <div class="stage stage-4">
+        <div class="stage-num">Step 04</div>
+        <div class="stage-title">Interview Completed</div>
+        <div class="stage-big" id="cnt-completed">0</div>
+        <div class="stage-sub">Interviews finished</div>
+        <div class="input-wrap">
+          <label>Count</label>
+          <input class="num-input" type="number" id="in-completed" min="0" value="0" oninput="updateDetail()">
+        </div>
+      </div>
+      <div class="connector">
+        <div class="arrow-row"><div class="shaft"></div><div class="arrowhead"></div></div>
+        <div class="conv-pill" id="pill-4">—</div>
+        <div class="conv-label">Authorization<br>Rate</div>
+      </div>
+      <div class="stage stage-5">
+        <div class="stage-num">Step 05</div>
+        <div class="stage-title">Authorized Case</div>
+        <div class="stage-big" id="cnt-authorized">0</div>
+        <div class="stage-sub">Billable cases opened</div>
+        <div class="input-wrap">
+          <label>Count</label>
+          <input class="num-input" type="number" id="in-authorized" min="0" value="0" oninput="updateDetail()">
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-head">Conversion Metrics</div>
+    <div class="stats-grid" style="margin-bottom:44px;">
+      <div class="stat-box b1">
+        <div class="s-label">Response Rate</div>
+        <div class="s-val" id="s-response">—</div>
+        <div class="s-sub">Outreach → Response</div>
+      </div>
+      <div class="stat-box b-nr">
+        <div class="s-label">No Response</div>
+        <div class="s-val" id="s-noresponse">—</div>
+        <div class="s-sub">Did not reply to outreach</div>
+      </div>
+      <div class="stat-box b2">
+        <div class="s-label">Interview Scheduled Rate</div>
+        <div class="s-val" id="s-scheduled">—</div>
+        <div class="s-sub">Response → Scheduled</div>
+      </div>
+      <div class="stat-box b3">
+        <div class="s-label">Interview Completion Rate</div>
+        <div class="s-val" id="s-completed">—</div>
+        <div class="s-sub">Scheduled → Completed</div>
+      </div>
+      <div class="stat-box b4">
+        <div class="s-label">Authorization Rate</div>
+        <div class="s-val" id="s-authorized-rate">—</div>
+        <div class="s-sub">Interview Completed → Billable Case</div>
+      </div>
+      <div class="stat-box b-overall">
+        <div class="s-label">Outreach → Active Case</div>
+        <div class="s-val" id="s-overall">—</div>
+        <div class="s-sub">End-to-end conversion</div>
+      </div>
+    </div>
+
+    <div class="sec-head">Funnel Drop-off</div>
+    <div class="bars-section">
+      <div class="bar-row">
+        <div class="bar-lbl">Outreach</div>
+        <div class="bar-track"><div class="bar-fill" id="bar-1" style="width:100%;background:#3b82f6;"><span id="bar-1-lbl">0</span></div></div>
+        <div class="bar-n" id="bar-1-n">0</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl">Response</div>
+        <div class="bar-track"><div class="bar-fill" id="bar-2" style="width:0%;background:#a855f7;"><span id="bar-2-lbl">0%</span></div></div>
+        <div class="bar-n" id="bar-2-n">0</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl">Scheduled</div>
+        <div class="bar-track"><div class="bar-fill" id="bar-3" style="width:0%;background:#f59e0b;"><span id="bar-3-lbl">0%</span></div></div>
+        <div class="bar-n" id="bar-3-n">0</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl">Completed</div>
+        <div class="bar-track"><div class="bar-fill" id="bar-4" style="width:0%;background:#06b6d4;"><span id="bar-4-lbl">0%</span></div></div>
+        <div class="bar-n" id="bar-4-n">0</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lbl">Authorized</div>
+        <div class="bar-track"><div class="bar-fill" id="bar-5" style="width:0%;background:#22c55e;"><span id="bar-5-lbl">0%</span></div></div>
+        <div class="bar-n" id="bar-5-n">0</div>
+      </div>
+    </div>
+
+    <div class="notes-box">
+      <h3>Notes</h3>
+      <textarea id="notes" placeholder="Add notes — outreach channel, observations, follow-up actions..." oninput="saveDetail()"></textarea>
+    </div>
+
+  </div><!-- /view-detail -->
+
+</div><!-- /page -->
+
+<script>
+  // ── CONSTANTS & STATE ──────────────────────────
+  const COUNTIES = ['Ashtabula','Lorain','Summit','Wayne','Cuyahoga','Medina','Lake','Geauga'];
+  const FIELDS   = ['outreach','response','scheduled','completed','authorized'];
+  const MONTHS   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  let currentCounty = null;
+  let currentMonth  = 'Year to Date';
+  let saveTimer     = null;
+
+  // ── STORAGE ────────────────────────────────────
+  function storageKey(county, month) { return 'pipeline::' + county + '::' + month; }
+
+  function getData(county, month) {
+    try {
+      const raw = localStorage.getItem(storageKey(county, month));
+      if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return { outreach:0, response:0, scheduled:0, completed:0, authorized:0, notes:'' };
+  }
+
+  function saveData(county, month, obj) {
+    try {
+      localStorage.setItem(storageKey(county, month), JSON.stringify(obj));
+      flashSaved();
+    } catch(e) {}
+  }
+
+  // ── SAVE INDICATOR ─────────────────────────────
+  function flashSaved() {
+    const ind   = document.getElementById('save-indicator');
+    const label = document.getElementById('save-label');
+    ind.className     = 'save-indicator saving';
+    label.textContent = 'Saving...';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      ind.className     = 'save-indicator saved';
+      label.textContent = 'All changes saved';
+      setTimeout(() => {
+        label.textContent = 'Data saved in browser';
+      }, 2000);
+    }, 400);
+  }
+
+  function checkStorageOnLoad() {
+    const ind   = document.getElementById('save-indicator');
+    const label = document.getElementById('save-label');
+    let hasData = false;
+    COUNTIES.forEach(c => {
+      MONTHS.forEach(m => {
+        try {
+          const raw = localStorage.getItem(storageKey(c, m));
+          if (raw) {
+            const d = JSON.parse(raw);
+            if (d.outreach > 0 || d.response > 0 || d.authorized > 0) hasData = true;
+          }
+        } catch(e) {}
+      });
+    });
+    ind.className     = hasData ? 'save-indicator saved' : 'save-indicator';
+    label.textContent = hasData ? 'Data saved in browser' : 'No data saved yet';
+  }
+
+  // ── YTD HELPERS ────────────────────────────────
+  function isYTD() { return currentMonth === 'Year to Date'; }
+
+  function getYTDData(county) {
+    const agg = { outreach:0, response:0, scheduled:0, completed:0, authorized:0, notes:'' };
+    MONTHS.forEach(m => {
+      const d = getData(county, m);
+      agg.outreach   += d.outreach;
+      agg.response   += d.response;
+      agg.scheduled  += d.scheduled;
+      agg.completed  += d.completed;
+      agg.authorized += d.authorized;
+    });
+    return agg;
+  }
+
+  function getEffectiveData(county) {
+    return isYTD() ? getYTDData(county) : getData(county, currentMonth);
+  }
+
+  // ── UTILS ──────────────────────────────────────
+  function pct(n, d) { return d ? Math.round((n / d) * 100) : null; }
+  function fmtPct(v) { return v !== null ? v + '%' : '—'; }
+  function pctClass(v) {
+    if (v === null) return 'pill-none';
+    if (v >= 60)   return 'pill-good';
+    if (v >= 30)   return 'pill-ok';
+    return 'pill-low';
+  }
+
+  // ── SUMMARY VIEW ───────────────────────────────
+  function renderSummary() {
+    const month = currentMonth;
+    const ytd   = isYTD();
+
+    document.getElementById('summary-heading').textContent = ytd ? 'All Counties — Year to Date' : 'All Counties — ' + month;
+    document.getElementById('view-subtitle').textContent   = 'All Counties Overview';
+    document.getElementById('ytd-banner-summary').classList.toggle('visible', ytd);
+
+    const tbody = document.getElementById('county-tbody');
+    tbody.innerHTML = '';
+
+    let totOut = 0, totAuth = 0, totCompleted = 0, respRates = [], overallRates = [];
+
+    COUNTIES.forEach(county => {
+      const d       = getEffectiveData(county);
+      totOut       += d.outreach;
+      totAuth      += d.authorized;
+      totCompleted += d.completed;
+
+      const r1      = pct(d.response,   d.outreach);
+      const overall = pct(d.authorized, d.outreach);
+      if (r1 !== null)      respRates.push(r1);
+      if (overall !== null) overallRates.push(overall);
+
+      const noResp = d.outreach > 0 ? (d.outreach - d.response) : '—';
+
+      const tr = document.createElement('tr');
+      tr.className = 'county-row';
+      tr.onclick   = () => openCounty(county);
+      tr.innerHTML = `
+        <td class="cn">${county}</td>
+        <td>${d.outreach  || '—'}</td>
+        <td>${d.response  || '—'}</td>
+        <td>${d.outreach > 0 ? noResp : '—'}</td>
+        <td class="pct-cell ${pctClass(r1)}">${fmtPct(r1)}</td>
+        <td>${d.scheduled || '—'}</td>
+        <td>${d.completed || '—'}</td>
+        <td>${d.authorized|| '—'}</td>
+        <td class="pct-cell ${pctClass(overall)}">${fmtPct(overall)}</td>
+        <td><button class="view-link" onclick="event.stopPropagation(); openCounty('${county}')">View &rarr;</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Always show totals for ALL 8 counties regardless of prior selection
+    document.getElementById('agg-outreach').textContent   = totOut       || '0';
+    document.getElementById('agg-completed').textContent  = totCompleted || '0';
+    document.getElementById('agg-authorized').textContent = totAuth      || '0';
+    document.getElementById('agg-response').textContent   = respRates.length    ? Math.round(respRates.reduce((a,b)=>a+b,0)/respRates.length)+'%'    : '—';
+    document.getElementById('agg-overall').textContent    = overallRates.length ? Math.round(overallRates.reduce((a,b)=>a+b,0)/overallRates.length)+'%' : '—';
+    renderSummaryPipeline();
+  }
+
+  function renderSummaryPipeline() {
+    // Aggregate all counties for selected month/YTD
+    let o = 0, r = 0, s = 0, c = 0, a = 0;
+    COUNTIES.forEach(county => {
+      const d = getEffectiveData(county);
+      o += d.outreach; r += d.response; s += d.scheduled; c += d.completed; a += d.authorized;
+    });
+
+    document.getElementById('sum-cnt-outreach').textContent   = o;
+    document.getElementById('sum-cnt-response').textContent   = r;
+    document.getElementById('sum-cnt-scheduled').textContent  = s;
+    document.getElementById('sum-cnt-completed').textContent  = c;
+    document.getElementById('sum-cnt-authorized').textContent = a;
+
+    const r1 = pct(r, o), r2 = pct(s, r), r3 = pct(c, s), r4 = pct(a, c);
+    document.getElementById('sum-pill-1').textContent = fmtPct(r1);
+    document.getElementById('sum-pill-2').textContent = fmtPct(r2);
+    document.getElementById('sum-pill-3').textContent = fmtPct(r3);
+    document.getElementById('sum-pill-4').textContent = fmtPct(r4);
+
+    const base = o || 1;
+    setSumBar('1', 100,        o, o);
+    setSumBar('2', pct(r,base), r, r);
+    setSumBar('3', pct(s,base), s, s);
+    setSumBar('4', pct(c,base), c, c);
+    setSumBar('5', pct(a,base), a, a);
+  }
+
+  function setSumBar(id, w, label, n) {
+    document.getElementById('sum-bar-'+id).style.width        = (w||0) + '%';
+    document.getElementById('sum-bar-'+id+'-lbl').textContent = id==='1' ? label : (w ? w+'%' : '0%');
+    document.getElementById('sum-bar-'+id+'-n').textContent   = n;
+  }
+
+  // ── DETAIL VIEW ────────────────────────────────
+  function openCounty(county) {
+    currentCounty = county;
+    document.getElementById('view-summary').classList.remove('active');
+    document.getElementById('view-detail').classList.add('active');
+    document.getElementById('back-btn').style.display = '';
+    document.getElementById('county-jump').value = county;
+    document.getElementById('view-subtitle').textContent       = county + ' · ' + (isYTD() ? 'Year to Date' : currentMonth);
+    document.getElementById('detail-county-name').textContent  = county;
+    document.getElementById('detail-month-name').textContent   = isYTD() ? 'Year to Date' : currentMonth;
+    loadDetail();
+  }
+
+  function loadDetail() {
+    const ytd = isYTD();
+    document.getElementById('ytd-banner-detail').classList.toggle('visible', ytd);
+
+    const d = ytd ? getYTDData(currentCounty) : getData(currentCounty, currentMonth);
+    FIELDS.forEach(f => {
+      const el        = document.getElementById('in-' + f);
+      el.value        = d[f] || 0;
+      el.readOnly     = ytd;
+      el.style.opacity = ytd ? '0.55' : '1';
+      el.style.cursor  = ytd ? 'not-allowed' : '';
+    });
+    const notesEl         = document.getElementById('notes');
+    notesEl.value         = ytd ? '' : (getData(currentCounty, currentMonth).notes || '');
+    notesEl.readOnly      = ytd;
+    notesEl.placeholder   = ytd ? 'Notes not available in Year to Date view' : 'Add notes — outreach channel, observations, follow-up actions...';
+    updateDetail();
+  }
+
+  function saveDetail() {
+    if (!currentCounty || isYTD()) return;
+    const d = getData(currentCounty, currentMonth);
+    FIELDS.forEach(f => { d[f] = parseInt(document.getElementById('in-' + f).value) || 0; });
+    d.notes = document.getElementById('notes').value;
+    saveData(currentCounty, currentMonth, d);
+  }
+
+  function updateDetail() {
+    saveDetail();
+    const d = currentCounty
+      ? (isYTD() ? getYTDData(currentCounty) : getData(currentCounty, currentMonth))
+      : { outreach:0, response:0, scheduled:0, completed:0, authorized:0 };
+    const { outreach, response, scheduled, completed, authorized } = d;
+
+    document.getElementById('cnt-outreach').textContent   = outreach;
+    document.getElementById('cnt-response').textContent   = response;
+    document.getElementById('cnt-scheduled').textContent  = scheduled;
+    document.getElementById('cnt-completed').textContent  = completed;
+    document.getElementById('cnt-authorized').textContent = authorized;
+
+    const r1 = pct(response,   outreach);
+    const r2 = pct(scheduled,  response);
+    const r3 = pct(completed,  scheduled);
+    const r4 = pct(authorized, completed);
+    const overall = pct(authorized, outreach);
+
+    ['pill-1','pill-2','pill-3','pill-4'].forEach((id, i) => {
+      document.getElementById(id).textContent = fmtPct([r1,r2,r3,r4][i]);
+    });
+
+    document.getElementById('s-response').textContent        = fmtPct(r1);
+    document.getElementById('s-noresponse').textContent      = outreach > 0 ? (outreach - response) : '—';
+    document.getElementById('s-scheduled').textContent       = fmtPct(r2);
+    document.getElementById('s-completed').textContent       = fmtPct(r3);
+    document.getElementById('s-authorized-rate').textContent = fmtPct(r4);
+    document.getElementById('s-overall').textContent         = fmtPct(overall);
+
+    const base = outreach || 1;
+    setBar('1', 100,                     outreach,   outreach);
+    setBar('2', pct(response,   base),   response,   response);
+    setBar('3', pct(scheduled,  base),   scheduled,  scheduled);
+    setBar('4', pct(completed,  base),   completed,  completed);
+    setBar('5', pct(authorized, base),   authorized, authorized);
+  }
+
+  function setBar(id, w, label, n) {
+    document.getElementById('bar-'+id).style.width        = (w||0) + '%';
+    document.getElementById('bar-'+id+'-lbl').textContent = id==='1' ? label : (w ? w+'%' : '0%');
+    document.getElementById('bar-'+id+'-n').textContent   = n;
+  }
+
+  // ── NAVIGATION ─────────────────────────────────
+  function showSummary() {
+    currentCounty = null;
+    document.getElementById('view-detail').classList.remove('active');
+    document.getElementById('view-summary').classList.add('active');
+    document.getElementById('back-btn').style.display = 'none';
+    document.getElementById('county-jump').value = '';
+    document.getElementById('view-subtitle').textContent = 'All Counties Overview';
+    renderSummary();
+  }
+
+  function onCountyJump() {
+    const county = document.getElementById('county-jump').value;
+    if (county) {
+      openCounty(county);
+    } else {
+      currentCounty = null;
+      showSummary();
+    }
+  }
+
+  function onMonthChange() {
+    currentMonth = document.getElementById('month-select').value;
+    if (currentCounty && document.getElementById('view-detail').classList.contains('active')) {
+      document.getElementById('detail-month-name').textContent  = isYTD() ? 'Year to Date' : currentMonth;
+      document.getElementById('view-subtitle').textContent      = currentCounty + ' · ' + (isYTD() ? 'Year to Date' : currentMonth);
+      loadDetail();
+    } else {
+      currentCounty = null;
+      renderSummary();
+    }
+  }
+
+  function resetCurrent() {
+    const empty = { outreach:0, response:0, scheduled:0, completed:0, authorized:0, notes:'' };
+    if (isYTD()) { alert('Switch to a specific month to reset data.'); return; }
+    if (currentCounty) {
+      if (!confirm('Reset all data for ' + currentCounty + ' — ' + currentMonth + '?')) return;
+      saveData(currentCounty, currentMonth, {...empty});
+      loadDetail();
+    } else {
+      if (!confirm('Reset ALL counties for ' + currentMonth + '?')) return;
+      COUNTIES.forEach(c => saveData(c, currentMonth, {...empty}));
+      renderSummary();
+    }
+  }
+
+  // ── EXPORT CSV ─────────────────────────────────
+  function exportCSV() {
+    const month = currentMonth;
+    const ytd   = isYTD();
+    const headers = ['County','Month','Outreach','Response','No Response','Response Rate %',
+      'Interview Scheduled','Interview Scheduled Rate %','Interview Completed',
+      'Interview Completion Rate %','Authorized Cases','Authorization Rate %',
+      'Overall Conversion %','Notes'];
+
+    function buildRow(county) {
+      const d  = ytd ? getYTDData(county) : getData(county, month);
+      const r1 = d.outreach   ? Math.round((d.response   / d.outreach)   * 100) : '';
+      const r2 = d.response   ? Math.round((d.scheduled  / d.response)   * 100) : '';
+      const r3 = d.scheduled  ? Math.round((d.completed  / d.scheduled)  * 100) : '';
+      const r4 = d.completed  ? Math.round((d.authorized / d.completed)  * 100) : '';
+      const ov = d.outreach   ? Math.round((d.authorized / d.outreach)   * 100) : '';
+      const noR = d.outreach  ? d.outreach - d.response : '';
+      const label = ytd ? 'Year to Date' : month;
+      return [
+        county, label, d.outreach, d.response, noR,
+        r1 !== '' ? r1+'%' : '', d.scheduled, r2 !== '' ? r2+'%' : '',
+        d.completed, r3 !== '' ? r3+'%' : '', d.authorized,
+        r4 !== '' ? r4+'%' : '', ov !== '' ? ov+'%' : '',
+        ytd ? '' : '"' + (getData(county, month).notes||'').replace(/"/g,'""') + '"'
+      ];
+    }
+
+    let rows, filename;
+    if (currentCounty) {
+      rows     = [headers, buildRow(currentCounty)];
+      filename = 'outreach-' + currentCounty.toLowerCase() + '-' + (ytd ? 'year-to-date' : month.toLowerCase()) + '.csv';
+    } else {
+      rows     = [headers, ...COUNTIES.map(buildRow)];
+      filename = 'outreach-all-counties-' + (ytd ? 'year-to-date' : month.toLowerCase()) + '.csv';
+    }
+
+    const csv  = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ── INIT ───────────────────────────────────────
+  checkStorageOnLoad();
+  renderSummary();
+</script>
+
+</body></html>
